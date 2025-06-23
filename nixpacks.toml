@@ -1,25 +1,11 @@
-# nixpacks.toml
-
 [phases.setup]
-# Specify the exact Python version you need.
-# python310Full is good, but if you want to be extremely precise,
-# ensure your runtime.txt (see below) specifies it too.
 nixPkgs = ["python310Full", "libGL", "libGLU", "ffmpeg", "git"]
 
 [phases.install]
-# It's generally good practice to explicitly upgrade pip before installing
-# dependencies to ensure you have the latest features and bug fixes.
-# However, if this line consistently fails, it might be the core problem.
+# Temporarily remove the upgrade line to see if the base pip works
 cmds = [
-  "python3.10 -m pip install --upgrade pip",
   "python3.10 -m pip install -r requirements.txt"
 ]
 
 [start]
 cmd = "gunicorn app:app --bind 0.0.0.0:$PORT"
-
-# [variables] (Optional)
-# If you run into memory issues with large packages like OpenCV or Mediapipe,
-# increasing the pip cache size can sometimes help, though less directly related to exit code 1.
-# PIP_NO_CACHE_DIR = "false"
-# PIP_CACHE_DIR = "/tmp/pip-cache"
