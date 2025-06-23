@@ -1,11 +1,31 @@
+# nixpacks.toml
+
 [phases.setup]
-nixPkgs = ["python310Full", "libGL", "libGLU", "ffmpeg", "git"]
+# Ensure all necessary system packages are available for compilation
+nixPkgs = [
+  "python310Full",
+  "libGL",
+  "libGLU",
+  "ffmpeg",
+  "git",
+  # Potentially add build-essential or equivalent for compilation tools if needed,
+  # but Nixpacks' python310Full often covers basic build tools.
+  # For very specific needs, consider "pkg-config", "mesa"
+]
 
 [phases.install]
-# Temporarily remove the upgrade line to see if the base pip works
+# We're now seeing the error on this line.
+# Keeping the upgrade pip for robustness, but if it was bypassed,
+# the error now clearly points to the requirements.txt installation.
 cmds = [
+  "python3.10 -m pip install --upgrade pip", # Keep this for a clean pip env
   "python3.10 -m pip install -r requirements.txt"
 ]
 
 [start]
 cmd = "gunicorn app:app --bind 0.0.0.0:$PORT"
+
+# Optional: Add environment variables for more verbose logging
+# [variables]
+# NIXPACKS_DEBUG = "1"
+# PIP_VERBOSE = "1" # This can give more details from pip itself
